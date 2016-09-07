@@ -1,6 +1,6 @@
 # centos-scripts-mage
 
-These script files intended for [redbox-digital/magento-virtual-appliance VM](../../../redbox-digital/magento-virtual-appliance)
+These script files intended for [redbox-digital/magento-virtual-appliance VM](../../../../redbox-digital/magento-virtual-appliance)
 
 # Installation
 
