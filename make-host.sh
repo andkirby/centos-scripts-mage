@@ -30,18 +30,17 @@ fi
 
 PROJECT_ROOT="/var/www/""$NAME"
 
-
 # Make NGinX configuration files by templates
 cp magento.conf "$NAME".conf
 sed -i "s/virtualhost/""$NAME""/g" "$NAME".conf
 if [ "$HTTPS_ON" = "1" ] ; then
     cp magento.ssl.conf "$NAME".ssl.conf
     sed -i "s/virtualhost/""$NAME""/g" "$NAME".ssl.conf
+    sudo mv "$NAME".ssl.conf /etc/nginx/conf.d/
 fi
 sudo mv "$NAME".conf /etc/nginx/conf.d/
-sudo mv "$NAME".ssl.conf /etc/nginx/conf.d/
 
-echo "NginX configuration files has been created in file/s:"
+echo "Nginx configuration files has been created in file/s:"
 find /etc/nginx/conf.d/ -name "$NAME.*"
 
 # Create project dir
@@ -56,7 +55,7 @@ echo "Project domain: http://$NAME/"
 # Add local host
 TEST=$(cat /etc/hosts | grep " $NAME " 2>&1)
 if [ "$TEST" ] ; then
-    echo "Notice: Virtualhost already added."
+    echo "Notice: VirtualHost already added."
 else
     cp /etc/hosts ./
     echo "127.0.0.1 $NAME " >> ./hosts
@@ -81,7 +80,7 @@ case "$answer" in
         # Check already added tab
         TEST=$(echo "$CRONTABS" | grep "/$NAME/cron" 2>&1)
         if [ "$TEST" ] ; then
-            echo "Notice: Crontab already added."
+            echo "Notice: crontab already added."
         else
             # Add new tab
             echo "$CRONTABS" > cron-update
@@ -105,7 +104,4 @@ if [ -d "/var/www/magento/vendor/onepica/magento/" ] ; then
             break
             ;;
     esac
-else
-    echo "No Magento source files by path /var/www/magento/vendor/onepica/magento/.";
-    echo "Installation cannot be suggested.";
 fi
