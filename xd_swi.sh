@@ -4,39 +4,35 @@
 # And run:
 #    ~/.xd_swi
 
-XD_ON=$(php -i | grep 'xdebug support => enabled' 2>&1);
-if [ "$XD_ON" ] ; then
-    FIND=""
-	REPLACE=";"
-else
-	FIND=";"
-	REPLACE=""
-fi
-
 file_ini=$(php -i | grep -Eo '(([A-Z]\:|/)[^ ]+)xdebug.ini')
-if [ -z ${file_ini} ]; then
+if [ -z "${file_ini}" ]; then
 	file_ini=$(php -i | grep -Eo '(([A-Z]\:|/)[^ ]+)php.ini')
 fi
-if [ -z ${file_ini} ]; then
-	echo 'There is no PHP ini file to edit.'
-	exit 1
-fi
-if [ ! -f ${file_ini} ]; then
+if [ -z "${file_ini}" ] || [ ! -f ${file_ini} ]; then
 	echo "There is no ini file '${file_ini}' to edit."
 	exit 1
 fi
 
-match_string='zend_extension = php_xdebug'
-sed -i "s/""$FIND""${match_string}/""$REPLACE""${match_string}/g" ${file_ini}
-php -i | grep 'xdebug support => enabled' 2>&1
+match_string=$(cat ${file_ini} | grep -Eo 'zend_extension.*xdebug')
+if [ -z "${match_string}" ]; then
+	echo "There is no declaration about xdebug PHP extension."
+	exit 1
+fi
 
-######## xdebug config sample ########
-: <<'sample'
-zend_extension = php_xdebug-2.4.1-5.5-vc11-nts.dll
-xdebug.remote_autostart = On
-xdebug.remote_enable=1
-xdebug.remote_mode=req
-xdebug.remote_port=9000
-xdebug.remote_host=127.0.0.1
-xdebug.remote_connect_back=0
-sample
+is_on=$(php -i | grep 'xdebug support => enabled' 2>&1);
+if [ -n "${is_on}" ] ; then
+    find="${match_string}"
+	replace=";${match_string}"
+else
+	find=";${match_string}"
+	replace="${match_string}"
+fi
+
+if sudo -v >/dev/null 2>&1; then
+    sudo sed -i.bak "s|${find}|${replace}|g" ${file_ini}
+else
+    # for windows users
+    sed -i.bak "s|${find}|${replace}|g" ${file_ini}
+fi
+
+php -i | grep 'xdebug support => enabled' 2>&1
