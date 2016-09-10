@@ -6,7 +6,12 @@ These script files intended for [redbox-digital/magento-virtual-appliance VM](..
 
 ```
 git clone git@github.com:andkirby/centos-scripts-mage.git ~/centos.scripts
-sudo cp ~/centos.scripts/magento.ssl.conf /etc/nginx/conf/magento_ssl.conf
+```
+
+## Generate SSL certificates
+```
+$ sudo mkdir /etc/nginx/cert && cd /etc/nginx/cert
+$ sudo openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout cc.key -out cc.crt -subj '/C=UA/ST=Kiev/L=Kiev/O=My Inc./OU=Department/CN=*.cc'
 ```
 
 # Usage
