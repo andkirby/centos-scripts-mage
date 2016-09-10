@@ -65,7 +65,7 @@ fi
 echo "Installing domain '$NAME' has been finished!"
 echo "Please add domain '$NAME' into your system 'hosts' file."
 
-
+# Install crontab
 if [ -f "/var/www/$NAME/cron.php" ]; then
     # Set up crontab for Magento
     printf "Install crontab for $NAME (yes|no) [no] : "
@@ -98,12 +98,13 @@ fi
 
 # Install magento
 if [ -d "/var/www/magento/vendor/onepica/magento/" ] ; then
-    printf "Would you like to install Magento (yes|no) [no] : "
+    echo "Found Magento by path /var/www/magento/vendor/onepica/magento/."
+    printf "Would you like to copy and install Magento (yes|no) [no] : "
     read answer
     case "$answer" in
         yes | y)
             cp -R /var/www/magento/vendor/onepica/magento/* /var/www/"$NAME"/
-            mageshell -p "$NAME"
+            mageshell install -p "$NAME"
             break
             ;;
     esac
