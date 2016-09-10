@@ -15,7 +15,7 @@ done
 HTTPS_ON=1
 # Check an ability to use exists SSL certificate
 if [[ ! "$NAME" =~ .+\.cc$ ]] ; then
-    echo "Notice: HTTPS is allowed for *.cc domains. HTTPS NginX configuration won't be created."
+    echo "notice: HTTPS is allowed for *.cc domains. HTTPS NginX configuration won't be created."
     printf "Would you like to continue? (yes|no) [no] : "
     read answer
     case "$answer" in
@@ -55,7 +55,7 @@ echo "Project domain: http://$NAME/"
 # Add local host
 TEST=$(cat /etc/hosts | grep " $NAME " 2>&1)
 if [ "$TEST" ] ; then
-    echo "Notice: VirtualHost already added."
+    echo "notice: VirtualHost already added."
 else
     cp /etc/hosts ./
     echo "127.0.0.1 $NAME " >> ./hosts
@@ -65,33 +65,36 @@ fi
 echo "Installing domain '$NAME' has been finished!"
 echo "Please add domain '$NAME' into your system 'hosts' file."
 
-# Set up crontab for Magento
-printf "Install crontab for $NAME (yes|no) [no] : "
-read answer
-case "$answer" in
-    no | n | "") break ;;
-    yes | y)
-        CRONTABS=$(crontab -l 2>&1)
-        # Check empty tabs
-        TEST=$(echo "$CRONTABS" | grep "no crontab" 2>&1)
-        if [ "$TEST" ] ; then
-            CRONTABS=""
-        fi
-        # Check already added tab
-        TEST=$(echo "$CRONTABS" | grep "/$NAME/cron" 2>&1)
-        if [ "$TEST" ] ; then
-            echo "Notice: crontab already added."
-        else
-            # Add new tab
-            echo "$CRONTABS" > cron-update
-            echo "# Domain $NAME" >> cron-update
-            echo "*/10 * * * * php /var/www/$NAME/cron.php" >> cron-update
-            crontab cron-update
-            rm cron-update
-        fi
-        break
-        ;;
-esac
+
+if [ -f "/var/www/$NAME/cron.php" ]; then
+    # Set up crontab for Magento
+    printf "Install crontab for $NAME (yes|no) [no] : "
+    read answer
+    case "$answer" in
+        no | n | "") break ;;
+        yes | y)
+            CRONTABS=$(crontab -l 2>&1)
+            # Check empty tabs
+            TEST=$(echo "$CRONTABS" | grep "no crontab" 2>&1)
+            if [ "$TEST" ] ; then
+                CRONTABS=""
+            fi
+            # Check already added tab
+            TEST=$(echo "$CRONTABS" | grep "/$NAME/cron" 2>&1)
+            if [ "$TEST" ] ; then
+                echo "notice: crontab already added."
+            else
+                # Add new tab
+                echo "$CRONTABS" > cron-update
+                echo "# Domain $NAME" >> cron-update
+                echo "*/10 * * * * php /var/www/$NAME/cron.php" >> cron-update
+                crontab cron-update
+                rm cron-update
+            fi
+            break
+            ;;
+    esac
+fi
 
 # Install magento
 if [ -d "/var/www/magento/vendor/onepica/magento/" ] ; then
