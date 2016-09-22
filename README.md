@@ -23,7 +23,8 @@ sudo cp ~/centos.scripts/nginx/ssl.cc.conf /etc/nginx/conf/magento_ssl.conf
 sh ~/centos.scripts/make-host.sh some-domain.cc
 ```
 
-## Switch status of XDebug in PHP
+## Install switcher status of XDebug in PHP
 ```
-sh ~/centos.scripts/xd_swi.sh
+sh ~/centos.scripts/xd_swi_install.sh
 ```
+And use it with command `xd_swi`.
