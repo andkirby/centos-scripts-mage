@@ -5,16 +5,20 @@
 #    ~/.xd_swi
 
 file_ini=$(php -i | grep -Eo '(([A-Z]\:|/)[^ ]+)xdebug.ini')
-if [ -z "${file_ini}" ]; then
+if [ -z ${file_ini} ]; then
         file_ini=$(php -i | grep -Eo '(([A-Z]\:|/)[^ ]+)php.ini')
 fi
-if [ -z "${file_ini}" ] || [ ! -f ${file_ini} ]; then
+if [ -z ${file_ini} ]; then
+        echo 'There is no PHP ini file to edit.'
+        exit 1
+fi
+if [ ! -f ${file_ini} ]; then
         echo "There is no ini file '${file_ini}' to edit."
         exit 1
 fi
 
-match_string=$(cat ${file_ini} | grep -Eo 'zend_extension.*xdebug')
-if [ -z "${match_string}" ]; then
+match_string=$(cat ${file_ini} | grep -Eo 'zend_extension=.*xdebug')
+if [ -z ${match_string} ]; then
         echo "There is no declaration about xdebug PHP extension."
         exit 1
 fi
@@ -28,11 +32,6 @@ else
         replace="${match_string}"
 fi
 
-if sudo -v >/dev/null 2>&1; then
-    sudo sed -i.bak "s|${find}|${replace}|g" ${file_ini}
-else
-    # for windows users
-    sed -i.bak "s|${find}|${replace}|g" ${file_ini}
-fi
-
-php -i | grep 'xdebug support => enabled' 2>&1
+sudo sed -i.bak "s|${find}|${replace}|g" ${file_ini}
+echo -e '\e[0;33m'$(php -i | grep 'xdebug support => enabled' 2>&1 || echo xdebug disabled)'\e[0m'
+exit 0
