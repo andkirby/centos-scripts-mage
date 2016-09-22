@@ -45,12 +45,12 @@ echo "NginX configuration files has been created in file/s:"
 find /etc/nginx/conf.d/ -name "$NAME.*"
 
 # Create project dir
-mkdir -p "$PROJECT_ROOT"
+sudo mkdir -p "$PROJECT_ROOT" || exit 1
+sudo chown vagrant:vagrant "$PROJECT_ROOT"
 echo "Project directory: $PROJECT_ROOT"
 
 # Restrart server
 sudo service nginx restart
-sudo service php-fpm restart
 echo "Project domain: http://$NAME/"
 
 # Add local host
