@@ -9,6 +9,8 @@ git clone git@github.com:andkirby/centos-scripts-mage.git ~/centos.scripts
 ```
 
 ## Generate SSL certificates
+Actually these files will be generated automatically in [make-host.sh](make-host.sh).
+It will use these commands:
 ```
 $ sudo mkdir /etc/nginx/cert
 $ sudo openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout /etc/nginx/cert/cc.key -out /etc/nginx/cert/cc.crt -subj '/C=UA/ST=Kiev/L=Kiev/O=My Inc./OU=Department/CN=*.cc'
