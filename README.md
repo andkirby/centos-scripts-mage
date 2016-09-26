@@ -18,7 +18,7 @@ $ sudo openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout /e
 
 Copy nginx config with path to these certificate files.
 ```
-sudo cp ~/centos.scripts/nginx/ssl.cc.conf /etc/nginx/conf/magento_ssl.conf
+sudo cp nginx/ssl.cc.conf /etc/nginx/conf/magento_ssl.conf
 ```
 
 # Usage
